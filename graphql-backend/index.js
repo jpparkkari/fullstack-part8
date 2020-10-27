@@ -89,12 +89,14 @@ const typeDefs = gql`
     name: String!
     born: String
     bookCount: Int!
+    id: ID!
   }
   type Book {
     title: String!
     author: String!
     published: Int
     genres: [String!]
+    id: ID!
   }
   type Query {
     bookCount: String!
@@ -143,7 +145,7 @@ const resolvers = {
 
       const author = authors.find(a => a.name === args.author)
       if(!author) {
-        const author = {name: args.author, bookCount:1}
+        const author = {name: args.author, bookCount:1, id: uuid() }
         authors = authors.concat(author)
       }
       else {
