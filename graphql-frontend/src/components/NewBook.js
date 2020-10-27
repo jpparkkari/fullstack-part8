@@ -23,7 +23,6 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
     
-    console.log('add book...', typeof(Number(published)))
     const pub = parseInt(published)
     createBook({ variables: { title, author, published: pub, genres}})
 
