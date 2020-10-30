@@ -136,11 +136,9 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    //mongoon
     bookCount: () => books.length,
-    //mongoon
     authorCount: () => authors.length,
-    allBooks: () => Book.find({}), /* (root, args) => {
+    allBooks: () => Book.find({}).populate('author'), /* (root, args) => {
       
       return books.filter(b => 
         (args.author ? b.author === args.author : true) 
@@ -150,24 +148,25 @@ const resolvers = {
     },*/
     allAuthors: () => Author.find({})  
   },
-  //ei vielä mongoon
-  //Author: {
-  //  bookCount: (root) => {
-  //    return books.filter(b => b.author === root.name).length
-  //  }
-  //},
+  
+  Author: {
+    bookCount: async (root) => {
+      const bookCounter = await Book.find({ author: root.id }).populate('author')
+      return bookCounter.filter(b => b.author.name === root.name).length
+    }
+  },
 
   Mutation: {
     addBook: async (root, args) => {
       
       let author = await Author.findOne({ name: args.author })
       if(!author) {
-        author = new Author({ name: args.author, bookCount: 0 })
+        author = new Author({ name: args.author })
       }
 
       //const book = { ...args, id: uuid() }
       const book = new Book({ ...args, author: author })
-      author.bookCount = author.bookCount+1
+      //author.bookCount = author.bookCount+1
       await author.save()
       return book.save()
       /*
@@ -185,15 +184,18 @@ const resolvers = {
       return book
       */
     },
-    //ei vielä mongoon
-    editAuthor: (root, args) => {
-      const author = authors.find(a => a.name === args.name)
+   
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name }) //authors.find(a => a.name === args.name)
       if(!author) {
         return null
       }
-      const updatedAuthor = {...author, born: args.setBornTo}
-      authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
-      return updatedAuthor
+      author.born = args.setBornTo
+      await author.save()
+      return author
+      //const updatedAuthor = {...author, born: args.setBornTo}
+      //authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
+      //return updatedAuthor
     }
   }
 } 
