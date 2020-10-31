@@ -16,7 +16,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
   .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
   })
-
+/*
 let authors = [
   {
     name: 'Robert Martin',
@@ -42,12 +42,12 @@ let authors = [
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
   },
 ]
-
+*/
 /*
  * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
  * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
 */
-
+/*
 let books = [
   {
     title: 'Clean Code',
@@ -98,7 +98,7 @@ let books = [
     id: "afa5de04-344d-11e9-a414-719c6709cf3e",
     genres: ['classic', 'revolution']
   },
-]
+]*/
 
 const typeDefs = gql`
   type Author {
@@ -138,14 +138,17 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: () => Book.find({}).populate('author'), /* (root, args) => {
-      
+    allBooks: async (root, args) => {
+      const books = await Book.find({}).populate('author')
+       
+     /* (root, args) => {
+    */
       return books.filter(b => 
-        (args.author ? b.author === args.author : true) 
+        (args.author ? b.author.name === args.author : true) 
         && 
         (args.genre ? b.genres.includes(args.genre) : true)
       )
-    },*/
+    },
     allAuthors: () => Author.find({})  
   },
   
