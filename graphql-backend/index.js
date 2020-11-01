@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const Author = require('./models/author')
@@ -170,8 +170,21 @@ const resolvers = {
       //const book = { ...args, id: uuid() }
       const book = new Book({ ...args, author: author })
       //author.bookCount = author.bookCount+1
-      await author.save()
-      return book.save()
+      try {
+        await author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+      try {
+        await book.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+      return book.populate('author')
       /*
       books = books.concat(book)
 
