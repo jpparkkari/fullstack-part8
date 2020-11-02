@@ -161,8 +161,9 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-      
-      let author = await Author.findOne({ name: args.author })
+      const session = await Author.startSession()
+      session.startTransaction()
+      let author = await Author.findOne({ name: args.author }).session(session)
       if(!author) {
         author = new Author({ name: args.author })
       }
@@ -171,8 +172,10 @@ const resolvers = {
       const book = new Book({ ...args, author: author })
       //author.bookCount = author.bookCount+1
       try {
-        await author.save()
+        await author.save({session})
       } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
@@ -180,10 +183,13 @@ const resolvers = {
       try {
         await book.save()
       } catch (error) {
+        await session.abortTransaction()
+        session.endSession()
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
+      session.endSession()
       return book.populate('author')
       /*
       books = books.concat(book)
