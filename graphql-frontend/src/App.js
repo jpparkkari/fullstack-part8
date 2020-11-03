@@ -25,6 +25,7 @@ const App = () => {
 
       <Authors
         show={page === 'authors'}
+        setError={notify}
       />
 
       <Books
