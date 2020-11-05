@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { ALL_AUTHORS, UPDATE_AUTHOR_BIRTH } from '../queries'
 
 const Authors = (props) => {
@@ -22,6 +22,7 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
   
+  const token = localStorage.getItem('library-user-token')
   const authors = result.data.allAuthors
 
   const submit = async (event) => {
@@ -70,7 +71,7 @@ const Authors = (props) => {
             onChange={({target}) => setBorn(target.value)}
           />
         </div>
-        <button disabled={name===''} type='submit'>update author</button>
+        <button disabled={name==='' || !token} type='submit'>update author</button>
               
       </form>
     </div>

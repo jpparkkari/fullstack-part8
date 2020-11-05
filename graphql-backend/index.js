@@ -259,7 +259,6 @@ const resolvers = {
         username: user.username,
         id: user._id,
       }
-
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     }
   }
