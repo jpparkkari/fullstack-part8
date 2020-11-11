@@ -19,14 +19,10 @@ const Books = (props) => {
   const genres = [...new Set(books.map(b => b.genres).flat(1))]
 
   const genreFilter = (selectedGenre) => {
-    if (selectedGenre === genre) {
-      setGenre('all')
-      setAll(true)
-    }
-    else {
-      setGenre(selectedGenre)
-      setAll(false)
-    }
+   
+    setGenre(selectedGenre)
+    setAll(false)
+    
   }
 
   return (
@@ -58,6 +54,7 @@ const Books = (props) => {
       <div>
         {genres.map( g => 
           <button key={g} onClick={() => genreFilter(g)} >{g}</button>)}
+          <button onClick={() => {setGenre('all'); setAll(true);}} >all</button>
       </div>
     </div>
   )

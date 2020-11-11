@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from './Button'
-//vai
-const navBar = ({setPage, logout, token}) => {
+
+const Navbar = ({setPage, logout, token}) => {
 
   if(!localStorage.getItem('library-user-token')) {
     return (
@@ -16,10 +16,11 @@ const navBar = ({setPage, logout, token}) => {
     <div>
       <Button page='authors' setPage={setPage}></Button> 
       <Button page='books' setPage={setPage}></Button> 
-      <Button page='add' setPage={setPage}></Button> 
+      <Button page='add' setPage={setPage}></Button>
+      <Button page='recommend' setPage={setPage} /> 
       <button onClick={() => logout()}>logout</button>
     </div>
   )
 }
 
-export default navBar
+export default Navbar

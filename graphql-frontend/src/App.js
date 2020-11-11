@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommend from './components/Recommend'
 import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
 import Navbar from './components/Navbar'
@@ -13,6 +14,10 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const client = useApolloClient()
 
+  useEffect(() => {
+    setPage('authors')
+  }, [token])
+
   const notify = (message) => {
     setErrorMessage(message)
     setTimeout(() =>{
@@ -22,7 +27,7 @@ const App = () => {
 
   const logout = () => {
     setToken(null)
-    setPage('authors')
+    setPage('books')
     notify('logged out')
     localStorage.clear()
     client.resetStore()
@@ -48,6 +53,13 @@ const App = () => {
         show={page === 'add'}
         setError={notify}
       />
+
+      <Recommend 
+        show={page === 'recommend'}
+        setError={notify}
+        token={token}
+      />
+
       <LoginForm 
         show={page === 'login'}
         setToken={setToken}
