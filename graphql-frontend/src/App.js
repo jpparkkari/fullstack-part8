@@ -52,12 +52,14 @@ const App = () => {
       <NewBook
         show={page === 'add'}
         setError={notify}
+        setPage={setPage}
       />
 
       <Recommend 
         show={page === 'recommend'}
         setError={notify}
         token={token}
+        page={page}
       />
 
       <LoginForm 

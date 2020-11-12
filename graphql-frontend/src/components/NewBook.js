@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS, FIND_GENRE, ME } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
-  const [genre, setGenre] = useState('')
+  const [newBookGenre, setNewBookGenre] = useState('')
   const [genres, setGenres] = useState([])
 
   const [createBook] = useMutation(ADD_BOOK, {
     refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
+    onCompleted: () => {
+      props.setPage('books')
+    },
     onError: (error) => {
       props.setError(error.message)
     }
@@ -30,12 +33,12 @@ const NewBook = (props) => {
     setPublished('')
     setAuthor('')
     setGenres([])
-    setGenre('')
+    setNewBookGenre('')
   }
 
   const addGenre = () => {
-    setGenres(genres.concat(genre))
-    setGenre('')
+    setGenres(genres.concat(newBookGenre))
+    setNewBookGenre('')
   }
 
   return (
@@ -65,8 +68,8 @@ const NewBook = (props) => {
         </div>
         <div>
           <input
-            value={genre}
-            onChange={({ target }) => setGenre(target.value)}
+            value={newBookGenre}
+            onChange={({ target }) => setNewBookGenre(target.value)}
           />
           <button onClick={addGenre} type="button">add genre</button>
         </div>
