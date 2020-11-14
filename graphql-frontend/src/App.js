@@ -17,7 +17,9 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      window.alert(`New book ${subscriptionData.data.bookAdded.title} by ${subscriptionData.data.bookAdded.author}`)
+      const addedBook = subscriptionData.data.bookAdded
+      console.log(addedBook)
+      window.alert(`New book ${addedBook.title} by ${addedBook.author.name}`)
     }
   })
 
