@@ -5,17 +5,17 @@ import { ALL_BOOKS } from '../queries'
 const Books = (props) => {
   const [genre, setGenre] = useState('all')
   const [all, setAll] = useState(true)
-  const result = useQuery(ALL_BOOKS)
+  const {loading, error, data} = useQuery(ALL_BOOKS, {fetchPolicy: 'network-only'})
 
   if (!props.show) {
     return null
   }
 
-  if (result.loading) {
+  if (loading) {
     return <div>loading...</div>
   }
 
-  const books = result.data.allBooks
+  const books = data.allBooks
   const genres = [...new Set(books.map(b => b.genres).flat(1))]
 
   const genreFilter = (selectedGenre) => {

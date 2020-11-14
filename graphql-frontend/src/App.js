@@ -6,13 +6,20 @@ import Recommend from './components/Recommend'
 import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
 import Navbar from './components/Navbar'
-import { useApolloClient } from '@apollo/client'
+import { useSubscription, useApolloClient } from '@apollo/client'
+import { BOOK_ADDED } from './queries'
 
 const App = () => {
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
   const [errorMessage, setErrorMessage] = useState(null)
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(`New book ${subscriptionData.data.bookAdded.title} by ${subscriptionData.data.bookAdded.author}`)
+    }
+  })
 
   useEffect(() => {
     setPage('authors')

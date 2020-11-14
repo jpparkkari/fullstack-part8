@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery, useLazyQuery, parseAndCheckHttpResponse } from '@apollo/client'
-import { ALL_BOOKS, ME, FIND_GENRE } from '../queries'
+import { useLazyQuery } from '@apollo/client'
+import { ME, FIND_GENRE } from '../queries'
 
 const Recommend = ({token, ...props}) => {
   const [books, setBooks] = useState({})
