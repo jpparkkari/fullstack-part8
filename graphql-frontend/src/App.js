@@ -7,7 +7,7 @@ import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
 import Navbar from './components/Navbar'
 import { useSubscription, useApolloClient } from '@apollo/client'
-import { BOOK_ADDED } from './queries'
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -15,11 +15,31 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const client = useApolloClient()
 
+  const updateCacheWith = (addedBook) =>  {
+    const includedIn = (set, object) => {
+      const result = set.map(p => p.title).includes(object.title)
+      return result
+    }
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+      })
+      
+    }
+  }
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
       const addedBook = subscriptionData.data.bookAdded
       console.log(addedBook)
       window.alert(`New book ${addedBook.title} by ${addedBook.author.name}`)
+      //välimuistin päivitys, jotta muualla lisätty kirja näkyy kirjalistassa
+      updateCacheWith(addedBook)
     }
   })
 
